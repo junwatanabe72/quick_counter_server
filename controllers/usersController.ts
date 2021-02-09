@@ -31,8 +31,8 @@ export default {
       return res.status(404).json({ message: "not exist" });
     }
     try {
-      await targetUser.updateProfile(user);
-      res.json({});
+      const updateUser = await targetUser.updateProfile(user);
+      res.json({ updateUser });
     } catch (error) {
       res.status(400);
     }
