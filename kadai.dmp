@@ -1,0 +1,146 @@
+
+-- MySQL dump 10.13 Distrib 5.7.30, for Linux (x86_64)
+
+-- Host: localhost Database: kadai
+
+---
+
+-- Server version 5.7.30
+
+/_!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT _/;
+/_!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS _/;
+/_!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION _/;
+/_!40101 SET NAMES utf8mb4 _/;
+/_!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE _/;
+/_!40103 SET TIME_ZONE='+00:00' _/;
+/_!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 _/;
+/_!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 _/;
+/_!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' _/;
+/_!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 _/;
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+/_!40101 SET @saved_cs_client = @@character_set_client _/;
+/_!40101 SET character_set_client = utf8 _/;
+CREATE TABLE `categories` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`key` varchar(255) NOT NULL,
+`name` varchar(255) NOT NULL,
+`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/_!40101 SET character_set_client = @saved_cs_client _/;
+
+--
+-- Dumping data for table `categories`
+--
+
+LOCK TABLES `categories` WRITE;
+/_!40000 ALTER TABLE `categories` DISABLE KEYS _/;
+INSERT INTO `categories` VALUES (1,'programming','プログラミング','2020-06-16 06:16:34','2020-06-16 06:16:34'),(2,'work','仕事','2020-06-16 06:16:34','2020-06-16 06:16:34'),(3,'hobby','趣味','2020-06-16 06:16:34','2020-06-16 06:16:34');
+/_!40000 ALTER TABLE `categories` ENABLE KEYS _/;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `post_categories`
+--
+
+DROP TABLE IF EXISTS `post_categories`;
+/_!40101 SET @saved_cs_client = @@character_set_client _/;
+/_!40101 SET character_set_client = utf8 _/;
+CREATE TABLE `post_categories` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`post_id` int(11) NOT NULL,
+`category_id` int(11) NOT NULL,
+`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`),
+KEY `post_id` (`post_id`),
+KEY `category_id` (`category_id`),
+CONSTRAINT `post_categories_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+CONSTRAINT `post_categories_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+/_!40101 SET character_set_client = @saved_cs_client _/;
+
+--
+-- Dumping data for table `post_categories`
+--
+
+LOCK TABLES `post_categories` WRITE;
+/_!40000 ALTER TABLE `post_categories` DISABLE KEYS _/;
+INSERT INTO `post_categories` VALUES (1,1,1,'2020-06-16 06:27:56','2020-06-16 06:27:56'),(2,2,1,'2020-06-16 06:27:56','2020-06-16 06:27:56'),(3,3,1,'2020-06-16 06:27:56','2020-06-16 06:27:56'),(4,3,3,'2020-06-16 06:27:56','2020-06-16 06:27:56');
+/_!40000 ALTER TABLE `post_categories` ENABLE KEYS _/;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `posts`
+--
+
+DROP TABLE IF EXISTS `posts`;
+/_!40101 SET @saved_cs_client = @@character_set_client _/;
+/_!40101 SET character_set_client = utf8 _/;
+CREATE TABLE `posts` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`userId` int(11) NOT NULL,
+`title` varchar(255) NOT NULL,
+`body` text NOT NULL,
+`status` int(11) NOT NULL DEFAULT '0',
+`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`),
+KEY `userId` (`userId`),
+CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/_!40101 SET character_set_client = @saved_cs_client _/;
+
+--
+-- Dumping data for table `posts`
+--
+
+LOCK TABLES `posts` WRITE;
+/_!40000 ALTER TABLE `posts` DISABLE KEYS _/;
+INSERT INTO `posts` VALUES (1,3,'将軍がプログラミング学んでみた感想','ほげほげ',0,'2020-06-16 06:22:51','2020-06-16 06:22:51'),(2,2,'信長様の似顔絵を CSS でかいてみた','ふがー',0,'2020-06-16 06:24:13','2020-06-16 06:24:13'),(3,1,'青空の下でプログラミングしてみた感想','ほげー',0,'2020-06-16 06:24:41','2020-06-16 06:24:41');
+/_!40000 ALTER TABLE `posts` ENABLE KEYS _/;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/_!40101 SET @saved_cs_client = @@character_set_client _/;
+/_!40101 SET character_set_client = utf8 _/;
+CREATE TABLE `users` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`name` varchar(255) NOT NULL,
+`age` int(11) NOT NULL,
+`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/_!40101 SET character_set_client = @saved_cs_client _/;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/_!40000 ALTER TABLE `users` DISABLE KEYS _/;
+INSERT INTO `users` VALUES (1,'Nobunaga',20,'2020-06-16 06:11:17','2020-06-16 06:11:17'),(2,'Hideyoshi',30,'2020-06-16 06:13:53','2020-06-16 06:13:53'),(3,'Ieyasu',40,'2020-06-16 06:13:53','2020-06-16 06:13:53');
+/_!40000 ALTER TABLE `users` ENABLE KEYS _/;
+UNLOCK TABLES;
+/_!40103 SET TIME_ZONE=@OLD_TIME_ZONE _/;
+
+/_!40101 SET SQL_MODE=@OLD_SQL_MODE _/;
+/_!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS _/;
+/_!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS _/;
+/_!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT _/;
+/_!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS _/;
+/_!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION _/;
+/_!40111 SET SQL_NOTES=@OLD_SQL_NOTES _/;
+
+-- Dump completed on 2020-06-16 6:31:48
