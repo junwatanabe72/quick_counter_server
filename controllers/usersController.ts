@@ -30,19 +30,21 @@ export default {
     const { user } = req.body;
     const { id, ...params } = user;
     const dbUser = { ...params, userId: userId };
-    try {
-      const targetUser = await User.findOne({
-        where: {
-          [Op.and]: [{ name: dbUser.name }, { userId: dbUser.userId }],
-        },
-      });
 
+    const targetUser = await User.findOne({
+      where: {
+        [Op.and]: [{ name: dbUser.name }, { userId: dbUser.userId }],
+      },
+    });
+    try {
       if (targetUser) {
         await targetUser.updateProfile(dbUser);
-        return res.status(201);
+        res.status(201).end();
+        return;
       }
+      console.log(dbUser);
       await User.add(dbUser);
-      res.status(201);
+      res.status(201).end();
     } catch (error) {
       console.log("error");
       res.status(400).json({ error: "errorが発生しました。" });

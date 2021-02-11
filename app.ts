@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import bodyParser from "body-parser";
 import http from "http";
 import debug from "debug";
 import dotenv from "dotenv";
@@ -13,17 +12,16 @@ debug("express-typescript:server");
 const resHeader = function (req: Request, res: Response, next: NextFunction) {
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept,Authorization"
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
-  res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET,PATCH");
+  res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
   next();
 };
 //middleware
 app.use(resHeader);
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser());
+app.use(express.urlencoded({ extended: false }));
 
 //router
 app.get("/", (req: Request, res: Response) => {
