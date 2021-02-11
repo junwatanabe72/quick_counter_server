@@ -3,47 +3,49 @@ import User from "../models/user";
 import { Op } from "sequelize";
 
 type Params = "first" | "second" | "third";
-
+const userId = 1;
 export default {
   async index(req: Request, res: Response) {
     const attr = req.params.id;
     if (!["first", "second", "third"].includes(attr)) {
       return res.status(404).json({ message: "wrong request" });
     }
-    console.log(attr);
-    const users = await User.findAll({
-      where: {
-        [attr]: {
-          [Op.ne]: 0,
+    try {
+      const users = await User.findAll({
+        where: {
+          [attr]: {
+            [Op.ne]: 0,
+          },
         },
-      },
-      order: [[attr as Params, "ASC"]],
-    });
-
-    if (!users) {
-      return res.status(404).json({ message: "not exist" });
+        order: [[attr as Params, "ASC"]],
+      });
+      res.json({ users });
+    } catch (error) {
+      console.log("error");
+      res.status(400).json({ error: "errorが発生しました。" });
     }
-    res.json({ users });
   },
 
   async create(req: any, res: Response) {
     const { user } = req.body;
-    console.log(user);
+    const { id, ...params } = user;
+    const dbUser = { ...params, userId: userId };
     try {
       const targetUser = await User.findOne({
         where: {
-          [Op.and]: [{ name: user.name }, { userId: user.userId }],
+          [Op.and]: [{ name: dbUser.name }, { userId: dbUser.userId }],
         },
       });
 
       if (targetUser) {
-        const updateUser = await targetUser.updateProfile(user);
-        return res.json({ updateUser });
+        await targetUser.updateProfile(dbUser);
+        return res.status(201);
       }
-      const newUser = await User.add(user);
-      res.json({ newUser });
+      await User.add(dbUser);
+      res.status(201);
     } catch (error) {
-      res.status(400);
+      console.log("error");
+      res.status(400).json({ error: "errorが発生しました。" });
     }
   },
 };

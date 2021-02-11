@@ -29,7 +29,7 @@ app.use(bodyParser());
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "ok" });
 });
-app.use("/user", usersRouter);
+app.use("/users", usersRouter);
 
 const server = http.createServer(app);
 const port = process.env.PORT || "3000";
