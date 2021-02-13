@@ -1,0 +1,12 @@
+- name: setup nodejs14.x
+  shell: curl -sL https://rpm.nodesource.com/setup_14.x | bash -
+
+- name: installing 14.x version of node.js
+  yum:
+    name: nodejs
+    state: latest
+
+- name: installing yarn
+  npm:
+    name: yarn
+    global: yes

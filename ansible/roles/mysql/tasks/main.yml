@@ -1,0 +1,27 @@
+- name: install rpm
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ MYSQL_VERSION }}"
+
+- name: disable mysql8.0
+  shell: yum-config-manager --disable mysql80-community
+
+- name: enable mysql5.7
+  shell: yum-config-manager --enable mysql57-community
+
+- name: install mysqld
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - mysql-community-client
+
+- name: add my.cnf
+  copy:
+    src: "roles/mysql/files/my.cnf"
+    dest: "/etc/mysql/my.cnf"
+    owner: root
+    group: root
+    mode: 0644
