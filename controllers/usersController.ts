@@ -1,40 +1,53 @@
 import { Request, Response } from "express";
 import User from "../models/user";
+import { Op } from "sequelize";
 
+type Params = "first" | "second" | "third";
+const userId = 1;
 export default {
   async index(req: Request, res: Response) {
-    const users = await User.findAll();
-    if (!users) {
-      return res.status(404).json({ message: "not exist" });
+    const attr = req.params.id;
+    if (!["first", "second", "third"].includes(attr)) {
+      return res.status(404).json({ message: "wrong request" });
     }
-    res.json({ users });
+    try {
+      const users = await User.findAll({
+        where: {
+          [attr]: {
+            [Op.ne]: 0,
+          },
+        },
+        order: [[attr as Params, "ASC"]],
+      });
+      res.json({ users });
+    } catch (error) {
+      console.log("error");
+      res.status(400).json({ error: "errorが発生しました。" });
+    }
   },
 
   async create(req: any, res: Response) {
     const { user } = req.body;
+    const { id, ...params } = user;
+    const dbUser = { ...params, userId: userId };
+
+    const targetUser = await User.findOne({
+      where: {
+        [Op.and]: [{ name: dbUser.name }, { userId: dbUser.userId }],
+      },
+    });
     try {
-      const targetUser = await User.findOne({ where: { name: user.name } });
       if (targetUser) {
-        return res.json({ targetUser });
+        await targetUser.updateProfile(dbUser);
+        res.status(201).end();
+        return;
       }
-      const newUser = await User.add(user);
-      res.json({ newUser });
+      console.log(dbUser);
+      await User.add(dbUser);
+      res.status(201).end();
     } catch (error) {
-      res.status(400);
-    }
-  },
-  async update(req: any, res: Response) {
-    const id = req.params.id;
-    const { user } = req.body;
-    const targetUser = await User.findOne({ where: { id } });
-    if (!targetUser) {
-      return res.status(404).json({ message: "not exist" });
-    }
-    try {
-      await targetUser.updateProfile(user);
-      res.json({});
-    } catch (error) {
-      res.status(400);
+      console.log("error");
+      res.status(400).json({ error: "errorが発生しました。" });
     }
   },
 };

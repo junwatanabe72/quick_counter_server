@@ -4,6 +4,7 @@ import sequelize from "../middlewares/sequelize";
 class User extends Model {
   public id!: number;
   public name!: string;
+  public userId!: number;
   public first?: number;
   public second?: number;
   public third?: number;
@@ -30,6 +31,10 @@ User.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+    },
+    userId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
     },
     name: {
       type: DataTypes.STRING(250),
